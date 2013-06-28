@@ -28,5 +28,22 @@ module VCAP::CloudController
         Errors::ServiceBindingInvalid.new(e.errors.full_messages)
       end
     end
+
+    post "/v2/service_bindings", :create
+
+    def create
+      request_attrs = self.class::CreateMessage.decode(body)
+      body.rewind
+      instance = Models::ServiceInstance.find(guid: request_attrs.service_instance_guid)
+
+      if instance.is_a? Models::ManagedServiceInstance
+        return super
+      end
+
+      app = Models::App.find(guid: request_attrs.app_guid)
+
+      app.add_provided_service_instance(instance)
+      HTTP::NO_CONTENT
+    end
   end
 end

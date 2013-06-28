@@ -1171,7 +1171,6 @@ module VCAP::CloudController
 
             before do
               app_obj.add_route(route)
-              app_obj.save
             end
 
             it "should nullify routes" do

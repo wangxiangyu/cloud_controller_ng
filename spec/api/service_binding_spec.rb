@@ -53,6 +53,23 @@ module VCAP::CloudController
       end
     end
 
+    describe 'binding a provided service instance to an app' do
+      it 'should associate the provided service instance to the app' do
+        space = Models::Space.make
+        app = Models::App.make(space:space)
+        instance = Models::ProvidedServiceInstance.make(space: space)
+        developer = make_developer_for_space(space)
+        payload = {
+          "app_guid" => app.guid,
+          "service_instance_guid" => instance.guid,
+        }.to_json
+
+        post "/v2/service_bindings", payload, headers_for(developer)
+        last_response.status.should eq(204)
+        app.provided_service_instances.should eq([instance])
+      end
+    end
+
     describe "Permissions" do
       include_context "permissions"
 

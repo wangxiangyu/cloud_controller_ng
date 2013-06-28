@@ -37,6 +37,7 @@ module VCAP::CloudController
 
       many_to_one       :space
       many_to_one       :stack
+      many_to_many      :provided_service_instances
 
       many_to_many      :routes, :before_add => :validate_route, :after_add => :mark_routes_changed, :after_remove => :mark_routes_changed
 
